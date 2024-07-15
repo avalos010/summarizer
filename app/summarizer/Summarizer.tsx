@@ -25,7 +25,7 @@ function Summarizer({ summarize }: SummarizeProps) {
     <div className="flex flex-col w-full">
       <div className=" flex flex-row gap-4 my-3 justify-center">
         <textarea
-          className="textarea textarea-solid h-48 md:min-w-[40%]"
+          className="textarea textarea-solid h-48 md:min-w-[40%] bg-slate-800"
           placeholder="Text to summarize"
           onChange={(e) => setToSummarize(e.target.value)}
         />
@@ -35,7 +35,7 @@ function Summarizer({ summarize }: SummarizeProps) {
             <div className="spinner-dot-intermittent"></div>
           </div>
         ) : (
-          <div className="textarea textarea-solid h-48 md:min-w-[40%]">
+          <div className="h-48 p-3 md:w-[40%] bg-slate-800 rounded-md">
             <p className="text-xl">
               {summary ? summary : "Summary will show up here!"}
             </p>
