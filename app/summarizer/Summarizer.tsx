@@ -22,31 +22,35 @@ function Summarizer({ summarize }: SummarizeProps) {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className=" flex flex-row gap-4 my-3 justify-around">
+    <div className="flex flex-col w-full">
+      <div className=" flex flex-row gap-4 my-3 justify-center">
         <textarea
-          className="textarea textarea-solid h-48"
+          className="textarea textarea-solid h-48 md:min-w-[40%]"
           placeholder="Text to summarize"
           onChange={(e) => setToSummarize(e.target.value)}
         />
 
         {loading ? (
-          <div className="flex justify-center items-center ml-4">
+          <div className="flex justify-center items-center ml-4 ">
             <div className="spinner-dot-intermittent"></div>
           </div>
         ) : (
-          <textarea
-            className="textarea textarea-solid h-48"
-            placeholder="Summarized text"
-            value={summary}
-            disabled
-          />
+          <div className="textarea textarea-solid h-48 md:min-w-[40%]">
+            <p className="text-xl">
+              {summary ? summary : "Summary will show up here!"}
+            </p>
+          </div>
         )}
       </div>
 
-      <button onClick={handleSummarization} className="btn btn-outline-primary">
-        Summarize
-      </button>
+      <div className="items-center flex justify-center">
+        <button
+          onClick={handleSummarization}
+          className="btn btn-outline-primary w-auto"
+        >
+          Summarize
+        </button>
+      </div>
     </div>
   );
 }
