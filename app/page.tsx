@@ -1,54 +1,12 @@
-import DeployButton from "../components/DeployButton";
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
-import Header from "@/components/Header";
+"use client";
 
-export default async function Index() {
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
+import { summarize } from "./classify/pipeline";
 
-  const isSupabaseConnected = canInitSupabaseClient();
-
-  return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
-        </div>
-      </nav>
-
-      <div className="flex-1 flex flex-col gap-20 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
-      </div>
-
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Powered by{" "}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
-    </div>
+export default async function Home() {
+  const f = await summarize(
+    "The case arose in 2008, when Otis McDonald, a retired African American custodian, and others filed suit in U.S. District Court to challenge provisions of a 1982 Chicago law that, among other things, generally banned the new registration of handguns and made registration a prerequisite of possession of a firearm. The next day the National Rifle Association and others filed separate lawsuits challenging the Chicago law and an Oak Park, Ill., law that generally prohibited the possession or carrying of handguns and the carrying of other firearms except rifles or shotguns in one’s home or place of business. Each suit alleged that the law violated the right of individuals to possess and carry weapons, which the Supreme Court had found to be protected by the Second Amendment in District of Columbia v. Heller (2008). (Anticipating this finding, the plaintiffs in McDonald v. City of Chicago filed suit on the same morning that the decision in Heller was announced.) The crucial question, however, was whether the Second Amendment is applicable to the states and their political subdivisions. Citing “selective incorporation,” the Supreme Court’s gradual application to the states of most of the protections of the Bill of Rights through the due process clause of the Fourteenth Amendment (which prohibits the states from denying life, liberty, or property without due process of law), the plaintiffs argued that the Second Amendment is applicable through that clause as well as through the amendment’s “privileges or immunities” clause (which forbids the states from abridging the privileges or immunities of citizens of the United States)."
   );
+
+  console.log(f);
+  return <div>TEST</div>;
 }
