@@ -23,9 +23,9 @@ function Summarizer({ summarize }: SummarizeProps) {
 
   return (
     <div className="flex flex-col w-full">
-      <div className=" flex flex-row gap-4 my-3 justify-center">
+      <div className=" flex flex-col gap-4 my-3 justify-center md:flex-row p-5">
         <textarea
-          className="textarea textarea-solid h-48 md:min-w-[40%] bg-slate-800"
+          className="textarea textarea-solid h-48 md:min-w-[40%] bg-slate-800 min-w-full md: w-full"
           placeholder="Text to summarize"
           onChange={(e) => setToSummarize(e.target.value)}
         />
