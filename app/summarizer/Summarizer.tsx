@@ -35,7 +35,7 @@ function Summarizer({ summarize }: SummarizeProps) {
             <div className="spinner-dot-intermittent"></div>
           </div>
         ) : (
-          <div className="h-48 p-3 md:w-[40%] bg-slate-800 rounded-md">
+          <div className="h-fit p-3 md:w-[40%] bg-slate-800 rounded-md min-h-48">
             <p className="text-xl">
               {summary ? summary : "Summary will show up here!"}
             </p>
