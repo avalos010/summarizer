@@ -31,10 +31,8 @@ function Summarizer({ summarize }: SummarizeProps) {
         />
 
         {loading ? (
-          <div className="h-fit p-3 md:w-[40%] bg-slate-800 rounded-md min-h-48 flex justify-center items-center">
-            <div className="ml-4 ">
-              <div className="spinner-dot-intermittent"></div>
-            </div>
+          <div className="flex justify-center items-center ml-4 ">
+            <div className="spinner-dot-intermittent"></div>
           </div>
         ) : (
           <div className="h-fit p-3 md:w-[40%] bg-slate-800 rounded-md min-h-48">
