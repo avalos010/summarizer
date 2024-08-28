@@ -1,20 +1,27 @@
 import Link from "next/link";
 import React from "react";
 
-function LoginForm() {
+function LoginForm({
+  login,
+}: {
+  login: (formData: FormData) => Promise<never>;
+}) {
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-col gap-6">
+    <form className="mx-auto flex w-full max-w-sm flex-col gap-6">
       <div className="flex flex-col items-center">
         <h1 className="text-3xl font-semibold">Sign In</h1>
         <p className="text-sm">Sign in to access your account</p>
       </div>
       <div className="form-group">
         <div className="form-field">
-          <label className="form-label">Email address</label>
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
 
           <input
             placeholder="Type here"
             type="email"
+            name="email"
             className="input max-w-full"
           />
           <label className="form-label">
@@ -22,10 +29,13 @@ function LoginForm() {
           </label>
         </div>
         <div className="form-field">
-          <label className="form-label">Password</label>
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
           <div className="form-control">
             <input
               placeholder="Type here"
+              name="password"
               type="password"
               className="input max-w-full"
             />
@@ -46,7 +56,11 @@ function LoginForm() {
         </div>
         <div className="form-field pt-5">
           <div className="form-control justify-between">
-            <button type="button" className="btn btn-primary w-full">
+            <button
+              formAction={login}
+              type="submit"
+              className="btn btn-primary w-full"
+            >
               Sign in
             </button>
           </div>
@@ -63,7 +77,7 @@ function LoginForm() {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 
