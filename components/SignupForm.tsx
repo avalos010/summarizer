@@ -35,7 +35,7 @@ function SignupForm() {
           <div className="form-control">
             <input
               placeholder="Type here"
-              type="password2"
+              type="password"
               className="input max-w-full"
             />
           </div>
