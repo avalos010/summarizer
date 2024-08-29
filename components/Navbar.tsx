@@ -1,11 +1,16 @@
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 import React from "react";
+import SigoutBtn from "./SigoutBtn";
 
-function Navbar() {
+async function Navbar() {
+  const auth = await useIsLoggedIn();
+
   return (
     <div className="navbar">
-      <div className="navbar-start">
+      <div className="navbar-start justify-around">
         <a className="navbar-item text-2xl">Summarizer</a>
-        <p>Free4Ever NO BS!</p>
+
+        {auth ? <SigoutBtn /> : <p>Not Logged In</p>}
       </div>
     </div>
   );
