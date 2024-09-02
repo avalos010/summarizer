@@ -7,8 +7,6 @@ export const useIsLoggedIn = async () => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log(user, "user");
-
   if (user) {
     return true;
   }
