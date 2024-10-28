@@ -1,5 +1,5 @@
 import React from "react";
-import Summarizer from "./summarizer/Summarizer";
+import Summarizer from "./summarizer-free/Summarizer";
 import { summarize } from "./classify/pipeline";
 
 export default function page() {

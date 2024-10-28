@@ -1,5 +1,6 @@
 "use client";
 
+//! Keeping it seperate from pro version. Will add more limitations for anonymous users.
 import React from "react";
 import { useState } from "react";
 
@@ -7,7 +8,7 @@ type SummarizeProps = {
   summarize: (text: string) => Promise<string>;
 };
 
-function Summarizer({ summarize }: SummarizeProps) {
+function ProSummarizer({ summarize }: SummarizeProps) {
   const [toSummarize, setToSummarize] = useState("");
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,4 +56,4 @@ function Summarizer({ summarize }: SummarizeProps) {
   );
 }
 
-export default Summarizer;
+export default ProSummarizer;
