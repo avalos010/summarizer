@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 export const signUp = async (formData: FormData) => {
   "use server";
 
-  const origin = headers().get("origin");
+  const origin = process.env.NEXT_PUBLIC_SITE_URL;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = createClient();
