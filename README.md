@@ -1,5 +1,3 @@
 # Summarizer
 
-Alot of people are charging for this so I created a free no BS summarize application.
-
-Going to add auth just to save previous summary tabs.
+Trying to make a free version and pro version first shot at it! Wanted more of a challenge.
