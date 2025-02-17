@@ -1,21 +1,23 @@
 "use client";
 
+import Dropdown from "@/components/ripple/DropDown";
 import React from "react";
 import { useState } from "react";
-
+import { FaWandMagicSparkles } from "react-icons/fa6";
 type SummarizeProps = {
-  summarize: (text: string) => Promise<string>;
+  summarize: (text: string, length: number) => Promise<string>;
 };
 
 function Summarizer({ summarize }: SummarizeProps) {
   const [toSummarize, setToSummarize] = useState("");
+  const [summaryLength, setSummaryLength] = useState(64);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSummarization = async () => {
     if (toSummarize) {
       setLoading(true);
-      const result = await summarize(toSummarize);
+      const result = await summarize(toSummarize, summaryLength);
       setSummary(result);
       setLoading(false);
     }
@@ -23,11 +25,23 @@ function Summarizer({ summarize }: SummarizeProps) {
 
   return (
     <div className="flex flex-col w-full">
-      <div className=" flex flex-col gap-4 my-3 justify-center md:flex-row p-5">
+      <div className=" flex flex-col gap-4 my-3 justify-center p-5 items-center">
         <textarea
           className="textarea textarea-solid h-48 md:min-w-[40%] bg-slate-800 min-w-full md: w-full"
           placeholder="Text to summarize"
           onChange={(e) => setToSummarize(e.target.value)}
+        />
+
+        <Dropdown
+          options={[
+            { label: "Short", value: 64 },
+            { label: "Medium", value: 128 },
+            { label: "Long", value: 256 },
+          ]}
+          title="Summary Length"
+          onSelect={(value) => {
+            setSummaryLength(value as number);
+          }}
         />
 
         {loading ? (
@@ -46,9 +60,9 @@ function Summarizer({ summarize }: SummarizeProps) {
       <div className="items-center flex justify-center">
         <button
           onClick={handleSummarization}
-          className="btn btn-outline-primary w-auto"
+          className="btn btn-primary w-auto"
         >
-          Summarize
+          <FaWandMagicSparkles className="mr-2" /> Generate Summary
         </button>
       </div>
     </div>
