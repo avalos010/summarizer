@@ -1,6 +1,6 @@
 "use client";
 
-import Dropdown from "@/components/ripple/DropDown";
+import Dropdown from "@/components/DropDown";
 import React from "react";
 import { useState } from "react";
 import { FaWandMagicSparkles } from "react-icons/fa6";
@@ -49,9 +49,9 @@ function Summarizer({ summarize }: SummarizeProps) {
             <div className="spinner-dot-intermittent"></div>
           </div>
         ) : (
-          <div className="h-fit p-3 md:w-[40%] bg-slate-800 rounded-md min-h-48">
-            <p className="text-xl">
-              {summary ? summary : "Summary will show up here!"}
+          <div className=" bg-slate-800 p-6 md:max-w[40%]">
+            <p className="text-base">
+              {summary ? summary : "your summary will appear here!"}
             </p>
           </div>
         )}
