@@ -1,7 +1,6 @@
 "use client";
 
 import Dropdown from "@/components/DropDown";
-import React from "react";
 import { useState } from "react";
 import { FaWandMagicSparkles } from "react-icons/fa6";
 type SummarizeProps = {
@@ -22,7 +21,6 @@ function Summarizer({ summarize }: SummarizeProps) {
       setLoading(false);
     }
   };
-
   return (
     <div className="flex flex-col w-full">
       <div className=" flex flex-col gap-4 my-3 justify-center p-5 items-center">

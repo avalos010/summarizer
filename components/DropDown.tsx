@@ -1,11 +1,22 @@
-import React from "react";
-import Select from "react-select";
+"use client";
 
+import Select from "react-select";
+import { useEffect, useState } from "react";
 const Dropdown = ({ options, onSelect, title, ...props }: DropdownProps) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    //fixes hydration error with react-select
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <div>
       <label className="block mb-2 text-sm font-medium">{title}</label>
-
       <Select
         className="basic-single text-black"
         classNamePrefix="select"
