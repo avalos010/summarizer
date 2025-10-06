@@ -1,0 +1,145 @@
+name: Deploy and Test Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job 1: Build and Deploy
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      deployment-url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.VERCEL_URL }}
+
+      # Deploy to Vercel (if using Vercel)
+      - name: Deploy to Vercel
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+
+      # Alternative: Deploy to other platforms
+      # - name: Deploy to Netlify
+      #   run: |
+      #     # Add your deployment commands here
+      #     echo "Deployed to: ${{ github.event.deployment.payload.web_url }}"
+
+  # Job 2: Run Tests Against Deployed Environment
+  test-deployed:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      # Wait for deployment to be ready
+      - name: Wait for deployment
+        run: |
+          echo "Waiting for deployment to be ready..."
+          sleep 30
+          # You can add health check here
+          # curl -f ${{ needs.deploy.outputs.deployment-url }}/api/health || exit 1
+
+      # Run E2E tests against deployed environment
+      - name: Run E2E Tests
+        run: pnpm exec playwright test
+        env:
+          # Override base URL to point to deployed environment
+          BASE_URL: ${{ needs.deploy.outputs.deployment-url }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-deployed
+          path: playwright-report/
+          retention-days: 30
+
+  # Job 3: Post-deployment Health Check
+  health-check:
+    needs: [deploy, test-deployed]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health Check
+        run: |
+          echo "Running health checks against: ${{ needs.deploy.outputs.deployment-url }}"
+
+          # Check if the site is accessible
+          curl -f "${{ needs.deploy.outputs.deployment-url }}" || exit 1
+
+          # Check if login page loads
+          curl -f "${{ needs.deploy.outputs.deployment-url }}/login" || exit 1
+
+          # Check if free version is accessible
+          curl -f "${{ needs.deploy.outputs.deployment-url }}/summarizer-free" || exit 1
+
+          echo "✅ All health checks passed!"
+
+      - name: Notify Success
+        if: success()
+        run: |
+          echo "🎉 Deployment successful and all tests passed!"
+          echo "🌐 Application URL: ${{ needs.deploy.outputs.deployment-url }}"
+
+      - name: Notify Failure
+        if: failure()
+        run: |
+          echo "❌ Deployment or tests failed!"
+          echo "🔍 Check the logs above for details."
