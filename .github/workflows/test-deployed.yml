@@ -1,0 +1,61 @@
+name: Test Deployed App
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  test-deployed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      # Run E2E tests against your deployed app
+      - name: Run E2E Tests against deployed app
+        run: pnpm exec playwright test --config=playwright.config.deployed.ts
+        env:
+          BASE_URL: https://summarizer-fj7ipi4cf-avalos010s-projects.vercel.app
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployed-test-results
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Health Check
+        run: |
+          echo "🔍 Running health checks..."
+          curl -f "https://summarizer-fj7ipi4cf-avalos010s-projects.vercel.app" || exit 1
+          curl -f "https://summarizer-fj7ipi4cf-avalos010s-projects.vercel.app/api/health" || exit 1
+          echo "✅ Health check passed!"
+
+      - name: Test Results
+        if: success()
+        run: |
+          echo "🎉 All tests passed against deployed app!"
+          echo "🌐 Live at: https://summarizer-fj7ipi4cf-avalos010s-projects.vercel.app"
