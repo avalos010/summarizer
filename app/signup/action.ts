@@ -7,11 +7,9 @@ export const signUp = async (formData: FormData) => {
   const origin = process.env.NEXT_PUBLIC_SITE_URL;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const supabase = createClient();
+  const supabase = await createClient();
 
-  const { error } = await (
-    await supabase
-  ).auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: { emailRedirectTo: `${origin}/auth/callback` },

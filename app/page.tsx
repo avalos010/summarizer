@@ -1,7 +1,12 @@
-import React from "react";
-import Summarizer from "./summarizer-free/Summarizer";
-import { summarize } from "./classify/pipeline";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
+import { redirect } from "next/navigation";
 
-export default function page() {
-  return <Summarizer summarize={summarize} />;
+export default async function HomePage() {
+  const isLoggedIn = await useIsLoggedIn();
+
+  if (isLoggedIn) {
+    redirect("/summarizer-pro");
+  } else {
+    redirect("/summarizer-free");
+  }
 }
