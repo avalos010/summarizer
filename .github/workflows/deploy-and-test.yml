@@ -2,9 +2,9 @@ name: Deploy and Test Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   pull_request:
-    branches: [main]
+    branches: ["**"]
 
 jobs:
   # Job 1: Build and Deploy
