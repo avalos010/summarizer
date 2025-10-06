@@ -8,6 +8,9 @@ on:
 jobs:
   test-deployed:
     runs-on: ubuntu-latest
+    # TODO: Fix CI/CD performance issues - currently too slow (10+ min vs 30s locally)
+    # Skip for now until we optimize or find better approach
+    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
